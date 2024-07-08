@@ -5,8 +5,6 @@ VisualStudioVersion = 17.10.35004.147
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlayerQuests", "PlayerQuests\PlayerQuests.csproj", "{4BA8C842-975A-4ED2-A15E-EC8CC3EFC046}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KamiToolKit", "TriquetraDependencies\KamiToolKit\KamiToolKit.csproj", "{C827BF82-A53B-4665-BDCA-E1683AF0F3E2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,14 +21,6 @@ Global
 		{4BA8C842-975A-4ED2-A15E-EC8CC3EFC046}.ExportRelease|x64.Build.0 = Release|x64
 		{4BA8C842-975A-4ED2-A15E-EC8CC3EFC046}.Release|x64.ActiveCfg = Release|x64
 		{4BA8C842-975A-4ED2-A15E-EC8CC3EFC046}.Release|x64.Build.0 = Release|x64
-		{C827BF82-A53B-4665-BDCA-E1683AF0F3E2}.Debug|x64.ActiveCfg = Debug|x64
-		{C827BF82-A53B-4665-BDCA-E1683AF0F3E2}.Debug|x64.Build.0 = Debug|x64
-		{C827BF82-A53B-4665-BDCA-E1683AF0F3E2}.ExportDebug|x64.ActiveCfg = ExportDebug|x64
-		{C827BF82-A53B-4665-BDCA-E1683AF0F3E2}.ExportDebug|x64.Build.0 = ExportDebug|x64
-		{C827BF82-A53B-4665-BDCA-E1683AF0F3E2}.ExportRelease|x64.ActiveCfg = ExportRelease|x64
-		{C827BF82-A53B-4665-BDCA-E1683AF0F3E2}.ExportRelease|x64.Build.0 = ExportRelease|x64
-		{C827BF82-A53B-4665-BDCA-E1683AF0F3E2}.Release|x64.ActiveCfg = ExportRelease|x64
-		{C827BF82-A53B-4665-BDCA-E1683AF0F3E2}.Release|x64.Build.0 = ExportRelease|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

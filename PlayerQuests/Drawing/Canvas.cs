@@ -45,11 +45,6 @@ namespace PlayerQuests.Drawing
 
         public override void Draw()
         {
-            if (Plugin.questNameplateNode != null)
-            {
-                Plugin.questNameplateNode.UpdateStyle();
-
-            }
             MouseButtonState.UpdateState();
             var cursorPos = ImGui.GetMousePos();
             Services.GameGui.ScreenToWorld(cursorPos, out var worldPos);
@@ -61,10 +56,19 @@ namespace PlayerQuests.Drawing
 
             if (Plugin.Configuration!.showPosPicker)
             {
-                DrawFunctions.CircleXZ(worldPos, 0.5f, new Brush { Color = new Vector4(81, 54, 148, 180) / 255f, Fill = new Vector4(184, 83, 159, 123) / 255, Thickness = 3f });
-                DrawFunctions.CircleXZ(worldPos, 0.5f, new Brush { Color = new Vector4(81, 54, 148, 180) / 255f, Fill = new Vector4(184, 83, 159, 0) / 255, Thickness = 3f });
-                DrawFunctions.CircleXZ(worldPos, 0.3f, new Brush { Color = new Vector4(81, 54, 148, 180) / 255f, Fill = new Vector4(184, 83, 159, 0) / 255, Thickness = 3f });
-                DrawFunctions.CircleXZ(worldPos, 0.01f, new Brush { Color = new Vector4(81, 54, 148, 180) / 255f, Fill = new Vector4(184, 83, 159, 0) / 255, Thickness = 2.5f });
+                //DrawFunctions.CircleXZ(worldPos, 0.5f, new Brush { Color = new Vector4(81, 54, 148, 180) / 255f, Fill = new Vector4(184, 83, 159, 123) / 255, Thickness = 3f });
+                //DrawFunctions.CircleXZ(worldPos, 0.5f, new Brush { Color = new Vector4(81, 54, 148, 180) / 255f, Fill = new Vector4(184, 83, 159, 0) / 255, Thickness = 3f });
+                //DrawFunctions.CircleXZ(worldPos, 0.3f, new Brush { Color = new Vector4(81, 54, 148, 180) / 255f, Fill = new Vector4(184, 83, 159, 0) / 255, Thickness = 3f });
+                //DrawFunctions.CircleXZ(worldPos, 0.01f, new Brush { Color = new Vector4(81, 54, 148, 180) / 255f, Fill = new Vector4(184, 83, 159, 0) / 255, Thickness = 2.5f });
+                DrawFunctions.CircleXZ(worldPos, 0.76f, new Brush { Color = new Vector4(171, 133, 130, 100) / 255f, Fill = new Vector4(171, 133, 130, 100) / 255f, Thickness = 2.5f }); // Transparent Tinge
+                DrawFunctions.CircleXZ(worldPos, 0.7f, new Brush { Color = new Vector4(255, 255, 180, 200) / 255f, Fill = new Vector4(255, 255, 180, 0) / 255f, Thickness = 2.5f }); // Bright Outter Line
+                DrawFunctions.CircleXZ(worldPos, 0.74f, new Brush { Color = new Vector4(236, 170, 108, 200) / 255f, Fill = new Vector4(236, 170, 108, 0) / 255f, Thickness = 2.5f }); // Orange Outter Tinge
+                DrawFunctions.CircleXZ(worldPos, 0.72f, new Brush { Color = new Vector4(255, 204, 113, 200) / 255f, Fill = new Vector4(255, 204, 113, 0) / 255f, Thickness = 2.5f }); // Slightly Less Orange Outter Tinge
+                DrawFunctions.CircleXZ(worldPos, 0.35f, new Brush { Color = new Vector4(255, 174, 78, 200) / 255f, Fill = new Vector4(255, 174, 78, 0) / 255f, Thickness = 2.5f }); // Bright Orange Inner Tinge
+                DrawFunctions.CircleXZ(worldPos, 0.349f, new Brush { Color = new Vector4(255, 255, 166, 50) / 255f, Fill = new Vector4(255, 255, 166, 50) / 255f, Thickness = 2.5f }); // Bright Orange Inner Tinge
+                DrawFunctions.RotatingCircle4SegmentsXZ(worldPos, 0.7f, new Brush { Color = new Vector4(236, 170, 108, 200) / 255f, Fill = new Vector4(236, 170, 108, 0) / 255f, Thickness = 25f });
+                DrawFunctions.RotatingCircle4SegmentsXZ(worldPos, 0.15f, new Brush { Color = new Vector4(236, 170, 108, 200) / 255f, Fill = new Vector4(236, 170, 108, 0) / 255f, Thickness = 25f }, 45f, MathF.PI / 180f * 33);
+
 
                 if (MouseButtonState.LeftPressed)
                 {

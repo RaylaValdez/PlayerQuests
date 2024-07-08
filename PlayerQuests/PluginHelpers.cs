@@ -11,10 +11,11 @@ using CameraManager = FFXIVClientStructs.FFXIV.Client.Game.Control.CameraManager
 using Dalamud.Plugin;
 using Dalamud.Interface;
 using System.Drawing;
-using KamiToolKit;
 using FFXIVClientStructs;
-using KamiToolKit.Classes;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using Dalamud.Interface.GameFonts;
+using FFXIVClientStructs.FFXIV.Component.GUI;
+using Dalamud.Interface.ManagedFontAtlas;
 
 internal static class PluginHelpers
 {
@@ -83,7 +84,7 @@ internal static class PluginHelpers
     public static string questAuthor = string.Empty;
 
 
-    public static KamiToolKit.Nodes.TextNode questNameTextNode = new();
+
 
 
 
@@ -115,15 +116,19 @@ internal static class PluginHelpers
         // Calculate the size of the questName text
         //var textSize = ImGui.CalcTextSize(questName);
         // Adjust screenPosForText to center the text
-        screenPosForText -= new Vector2(0f, -50f);
+
 
         if (dummyIconVisible)
         {
+            //push
+            screenPosForText -= new Vector2(ImGui.CalcTextSize(questName).X / 2, -50f);
+
             var IDrawList = ImGui.GetBackgroundDrawList();
 
             IDrawList.AddImage(QuestIcon.ImGuiHandle, screenPosForIcon, screenPosForIcon + iconSize);
-            //IDrawList.AddText(UiBuilder.DefaultFont, UiBuilder.DefaultFontSizePx, screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, 256) / 255), questName);
 
+            //IDrawList.AddText(axisLikeFont, UiBuilder.DefaultFontSizePx, screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, 256) / 255), questName);
+            // pop
         }
 
 

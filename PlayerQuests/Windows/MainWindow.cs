@@ -79,7 +79,6 @@ public class MainWindow : Window, IDisposable
         {
             Plugin.Configuration!.showPosPicker = true;
             PluginHelpers.dummyIconVisible = true;
-            Plugin.questNameplateNode = new(3474);
         }
 
         ImGui.SameLine();
@@ -105,7 +104,8 @@ public class MainWindow : Window, IDisposable
 
         if (ImGui.Button("Kill Dummy"))
         {
-            Plugin.questNameplateNode.Dispose();
+            PluginHelpers.dummyIconVisible = false;
+
         }
 
     }
