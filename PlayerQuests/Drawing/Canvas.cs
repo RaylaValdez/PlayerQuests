@@ -9,6 +9,7 @@ using Dalamud.Game.ClientState.Keys;
 using Dalamud.Game.ClientState.Objects.SubKinds;
 using Dalamud.Game.ClientState.Objects.Types;
 using Dalamud.Interface.GameFonts;
+using Dalamud.Interface.ManagedFontAtlas;
 using Dalamud.Interface.Utility;
 using Dalamud.Interface.Windowing;
 using Dalamud.Utility;
@@ -16,11 +17,13 @@ using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using PlayerQuests.Drawing;
+using PlayerQuests.Helpers;
 
 namespace PlayerQuests.Drawing
 {
     internal unsafe class Canvas : Window
     {
+        private IFontHandle? FontHandle = null;
         public Canvas() : base("PlayerQuestGroundTargettingOverlay",
             ImGuiWindowFlags.NoInputs
             | ImGuiWindowFlags.NoTitleBar
@@ -33,6 +36,8 @@ namespace PlayerQuests.Drawing
         {
             this.IsOpen = true;
             this.RespectCloseHotkey = false;
+
+            FontHandle = GameFontBuilder.GetFont(GameFontFamilyAndSize.Axis18);
         }
 
         public override void PreDraw()
@@ -45,6 +50,12 @@ namespace PlayerQuests.Drawing
 
         public override void Draw()
         {
+            IDisposable? fontDisposer = null;
+            if (FontHandle?.Available ?? false)
+            {
+                fontDisposer = FontHandle.Push();
+            }
+            
             MouseButtonState.UpdateState();
             var cursorPos = ImGui.GetMousePos();
             Services.GameGui.ScreenToWorld(cursorPos, out var worldPos);
@@ -53,6 +64,7 @@ namespace PlayerQuests.Drawing
                 PluginHelpers.DrawDummy(PluginHelpers.questName, Plugin.Configuration!.lastWorldPos);
             }
             
+            fontDisposer?.Dispose();
 
             if (Plugin.Configuration!.showPosPicker)
             {

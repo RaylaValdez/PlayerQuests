@@ -56,6 +56,8 @@ internal static class PluginHelpers
     public static bool dummyIconVisible = false;
 
     public const uint maxCharacters = 50;
+    
+    public const uint maxDescriptionCharacters = 560;
 
     public static string questType = string.Empty;
 
@@ -123,11 +125,11 @@ internal static class PluginHelpers
             //push
             screenPosForText -= new Vector2(ImGui.CalcTextSize(questName).X / 2, -50f);
 
-            var IDrawList = ImGui.GetBackgroundDrawList();
+            var IDrawList = ImGui.GetWindowDrawList();
 
             IDrawList.AddImage(QuestIcon.ImGuiHandle, screenPosForIcon, screenPosForIcon + iconSize);
-
-            //IDrawList.AddText(axisLikeFont, UiBuilder.DefaultFontSizePx, screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, 256) / 255), questName);
+            
+            IDrawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(), screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, 256) / 255), questName);
             // pop
         }
 

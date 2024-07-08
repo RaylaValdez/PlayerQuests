@@ -65,7 +65,7 @@ public class MainWindow : Window, IDisposable
 
         }
 
-        if (ImGui.InputTextMultiline("Quest Description", ref PluginHelpers.questDescription, PluginHelpers.maxCharacters, new Vector2(300, 150)))
+        if (ImGui.InputTextMultiline("Quest Description", ref PluginHelpers.questDescription, PluginHelpers.maxDescriptionCharacters, new Vector2(300, 150)))
         {
 
         }
