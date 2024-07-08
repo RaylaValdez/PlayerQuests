@@ -1,0 +1,3 @@
+[submodule "TriquetraDependencies/KamiToolKit"]
+	path = TriquetraDependencies/KamiToolKit
+	url = https://github.com/MidoriKami/KamiToolKit/

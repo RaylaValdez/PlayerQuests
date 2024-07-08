@@ -1,0 +1,12 @@
+{
+  "Author": "Rayla Valdez",
+  "Name": "PlayerQuests",
+  "Punchline": "Quests for players, by players.",
+  "Description": "Idfk im figuring this out as i go.",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "quests",
+    "player",
+    "tasks"
+  ]
+}
