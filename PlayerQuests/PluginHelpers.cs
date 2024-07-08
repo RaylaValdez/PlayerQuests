@@ -10,6 +10,11 @@ using System.Runtime.InteropServices;
 using CameraManager = FFXIVClientStructs.FFXIV.Client.Game.Control.CameraManager;
 using Dalamud.Plugin;
 using Dalamud.Interface;
+using System.Drawing;
+using KamiToolKit;
+using FFXIVClientStructs;
+using KamiToolKit.Classes;
+using FFXIVClientStructs.FFXIV.Client.UI;
 
 internal static class PluginHelpers
 {
@@ -78,7 +83,7 @@ internal static class PluginHelpers
     public static string questAuthor = string.Empty;
 
 
-
+    public static KamiToolKit.Nodes.TextNode questNameTextNode = new();
 
 
 
@@ -108,17 +113,36 @@ internal static class PluginHelpers
         screenPosForIcon -= iconSize / 2;
 
         // Calculate the size of the questName text
-        var textSize = ImGui.CalcTextSize(questName);
+        //var textSize = ImGui.CalcTextSize(questName);
         // Adjust screenPosForText to center the text
-        screenPosForText -= new Vector2(textSize.X / 2f, -50f);
+        screenPosForText -= new Vector2(0f, -50f);
 
         if (dummyIconVisible)
         {
             var IDrawList = ImGui.GetBackgroundDrawList();
 
             IDrawList.AddImage(QuestIcon.ImGuiHandle, screenPosForIcon, screenPosForIcon + iconSize);
-            IDrawList.AddText(UiBuilder.DefaultFont, UiBuilder.DefaultFontSizePx, screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, 256) / 255), questName);
+            //IDrawList.AddText(UiBuilder.DefaultFont, UiBuilder.DefaultFontSizePx, screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, 256) / 255), questName);
+
         }
+
+        questNameTextNode = new KamiToolKit.Nodes.TextNode
+        {
+            NodeID = 640000,
+            Position = screenPosForText,
+            Size = new Vector2(250f, 125f),
+            TextColor = new Vector4(233, 255, 226, 256) / 255,
+            TextOutlineColor = KnownColor.White.Vector(),
+            IsVisible = dummyIconVisible,
+            FontSize = 24,
+            FontType = FFXIVClientStructs.FFXIV.Component.GUI.FontType.Jupiter,
+            TextFlags = FFXIVClientStructs.FFXIV.Component.GUI.TextFlags.Edge,
+            TextFlags2 = FFXIVClientStructs.FFXIV.Component.GUI.TextFlags2.Ellipsis,
+            Text = "Test Text"
+        };
+
+        PlayerQuests.System.nativeController.AttachToNode(questNameTextNode, 640000,NodePosition.AsLastChild)
+
     }
 
 

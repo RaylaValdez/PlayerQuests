@@ -13,4 +13,8 @@
   <ItemGroup>
     <None Include="XivCommon\XivCommon.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\TriquetraDependencies\KamiToolKit\KamiToolKit.csproj" />
+  </ItemGroup>
 </Project>
