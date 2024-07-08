@@ -20,6 +20,8 @@ namespace PlayerQuests
         [PluginService] public static IPluginLog Log { get; private set; } = null!;
 
         [PluginService] public static IObjectTable ObjectTable { get; private set; } = null!; // nulln't
+        
+        [PluginService] public static IDataManager DataManager { get; private set; } = null!;
 
     }
 }

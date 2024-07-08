@@ -20,7 +20,7 @@ public sealed class Plugin : IDalamudPlugin
 {
     private const string CommandName = "/pq";
 
-    private IDalamudPluginInterface PluginInterface { get; init; }
+    public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     private ICommandManager CommandManager { get; init; }
     public static Configuration? Configuration { get; private set; }
     
