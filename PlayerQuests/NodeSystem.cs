@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace PlayerQuests
 {
-    public static class System
+    public static class NodeSystem
     {
         public static NativeController nativeController { get; set; } = null!;
 

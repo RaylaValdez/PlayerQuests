@@ -45,6 +45,11 @@ namespace PlayerQuests.Drawing
 
         public override void Draw()
         {
+            if (Plugin.questNameplateNode != null)
+            {
+                Plugin.questNameplateNode.UpdateStyle();
+
+            }
             MouseButtonState.UpdateState();
             var cursorPos = ImGui.GetMousePos();
             Services.GameGui.ScreenToWorld(cursorPos, out var worldPos);

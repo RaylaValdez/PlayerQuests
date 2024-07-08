@@ -126,22 +126,7 @@ internal static class PluginHelpers
 
         }
 
-        questNameTextNode = new KamiToolKit.Nodes.TextNode
-        {
-            NodeID = 640000,
-            Position = screenPosForText,
-            Size = new Vector2(250f, 125f),
-            TextColor = new Vector4(233, 255, 226, 256) / 255,
-            TextOutlineColor = KnownColor.White.Vector(),
-            IsVisible = dummyIconVisible,
-            FontSize = 24,
-            FontType = FFXIVClientStructs.FFXIV.Component.GUI.FontType.Jupiter,
-            TextFlags = FFXIVClientStructs.FFXIV.Component.GUI.TextFlags.Edge,
-            TextFlags2 = FFXIVClientStructs.FFXIV.Component.GUI.TextFlags2.Ellipsis,
-            Text = "Test Text"
-        };
 
-        PlayerQuests.System.nativeController.AttachToNode(questNameTextNode, 640000,NodePosition.AsLastChild)
 
     }
 

@@ -23,6 +23,7 @@ public sealed class Plugin : IDalamudPlugin
     private IDalamudPluginInterface PluginInterface { get; init; }
     private ICommandManager CommandManager { get; init; }
     public static Configuration? Configuration { get; private set; }
+    public static QuestNameplateNode questNameplateNode { get; set; } = null!;
     
 
     public readonly WindowSystem WindowSystem = new("PlayerQuest");
@@ -46,6 +47,8 @@ public sealed class Plugin : IDalamudPlugin
         ConfigWindow = new ConfigWindow(this);
         MainWindow = new MainWindow(this);
         CanvasWindow = new Canvas();
+
+        NodeSystem.nativeController = new(pluginInterface);
 
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);
