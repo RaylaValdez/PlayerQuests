@@ -23,5 +23,6 @@ namespace PlayerQuests
         
         [PluginService] public static IDataManager DataManager { get; private set; } = null!;
 
+
     }
 }

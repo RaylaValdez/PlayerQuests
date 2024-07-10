@@ -18,6 +18,9 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using PlayerQuests.Drawing;
 using PlayerQuests.Helpers;
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
+using Dalamud.Game.Addon.Events;
+
 
 namespace PlayerQuests.Drawing
 {
@@ -55,10 +58,17 @@ namespace PlayerQuests.Drawing
             {
                 fontDisposer = FontHandle.Push();
             }
-            
+            var previousHovering = PluginHelpers.hovering;
+            PluginHelpers.hovering = false;
             MouseButtonState.UpdateState();
             var cursorPos = ImGui.GetMousePos();
             Services.GameGui.ScreenToWorld(cursorPos, out var worldPos);
+
+            if (previousHovering && !PluginHelpers.hovering)
+            {
+                Framework.Instance()->Cursor->ActiveCursorType = (int)AddonCursorType.Arrow;
+            }
+
             if (!PluginHelpers.questType.IsNullOrEmpty())
             {
                 PluginHelpers.DrawDummy(PluginHelpers.questName, Plugin.Configuration!.lastWorldPos);
@@ -89,6 +99,11 @@ namespace PlayerQuests.Drawing
                 }
 
             }
+        }
+
+        private bool hoveringOverSelectableRegion()
+        {
+            throw new NotImplementedException();
         }
 
         public override void PostDraw()

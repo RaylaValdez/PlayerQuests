@@ -16,6 +16,10 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 using Dalamud.Interface.GameFonts;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using Dalamud.Interface.ManagedFontAtlas;
+using Dalamud.Game.Addon.Events;
+using FFXIVClientStructs.FFXIV.Client.Game.Control;
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
+using Dalamud.Interface.Textures;
 
 internal static class PluginHelpers
 {
@@ -47,7 +51,7 @@ internal static class PluginHelpers
 
     //public static float playerZoom => CameraManager.
 
-    public static IDalamudTextureWrap? QuestIcon = null;
+    public static ISharedImmediateTexture? QuestIcon = null;
 
     public static string selectedQuestType = string.Empty;
 
@@ -87,6 +91,8 @@ internal static class PluginHelpers
 
 
 
+    public static bool hovering = false;
+
 
 
 
@@ -103,11 +109,10 @@ internal static class PluginHelpers
 
     public static void DrawDummy(string questName, Vector3 lastWorldPos)
     {
-        QuestIcon = Services.TextureProvider.GetFromGameIcon(QuestIcons[questType]).GetWrapOrEmpty();
+        QuestIcon = Services.TextureProvider.GetFromGameIcon(QuestIcons[questType]);
         var screenPosForIcon = new Vector2(0, 0);
         var screenPosForText = new Vector2(0, 0);
         var inView = false;
-
         questLocation = lastWorldPos;
 
         Services.GameGui.WorldToScreen(questLocation + iconMaxOffset, out screenPosForIcon, out inView);
@@ -124,13 +129,27 @@ internal static class PluginHelpers
         {
             //push
             screenPosForText -= new Vector2(ImGui.CalcTextSize(questName).X / 2, -50f);
+            var textWidth = ImGui.CalcTextSize(questName);
+
 
             var IDrawList = ImGui.GetWindowDrawList();
 
-            IDrawList.AddImage(QuestIcon.ImGuiHandle, screenPosForIcon, screenPosForIcon + iconSize);
+            IDrawList.AddImage(QuestIcon.GetWrapOrEmpty().ImGuiHandle, screenPosForIcon, screenPosForIcon + iconSize);
             
             IDrawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(), screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, 256) / 255), questName);
+
             // pop
+            unsafe
+            {
+                var prevCursorType = Framework.Instance()->Cursor->ActiveCursorType;
+                if (hoveringOverSelectableRegion(screenPosForText + textWidth / 2, textWidth * 1.5f) || hoveringOverSelectableRegion(screenPosForIcon + iconSize / 2, iconSize * 1.5f))
+                {
+                    hovering = true;
+                    Framework.Instance()->Cursor->ActiveCursorType = (int)AddonCursorType.Clickable;
+
+                }
+            }
+
         }
 
 
@@ -138,10 +157,26 @@ internal static class PluginHelpers
     }
 
 
+    public static bool hoveringOverSelectableRegion(Vector2 centerPosition, Vector2 size)
+    {
+        var mouseCursorLocation = ImGui.GetMousePos();
+        var hoveringOver = false;
+
+        var startXY = centerPosition - (size / 2f);
+        var endXY = startXY + size;
+
+        if (mouseCursorLocation.X >= startXY.X && mouseCursorLocation.X <= endXY.X && mouseCursorLocation.Y >= startXY.Y && mouseCursorLocation.Y <= endXY.Y)
+        {
+            // mouse is hovered here
+            hoveringOver = true;
+        }
+
+        return hoveringOver;
+    }
 
     public static void DrawIcon(string questIcon)
     {
-        QuestIcon = Services.TextureProvider.GetFromGameIcon(QuestIcons[questIcon]).GetWrapOrEmpty();
+        QuestIcon = Services.TextureProvider.GetFromGameIcon(QuestIcons[questIcon]);
 
         var screenPos = new Vector2(0, 0);
         var inView = false;
@@ -158,7 +193,7 @@ internal static class PluginHelpers
             {
                 var IDrawList = ImGui.GetBackgroundDrawList();
 
-                IDrawList.AddImage(QuestIcon.ImGuiHandle, screenPos, screenPos + iconSize);
+                IDrawList.AddImage(QuestIcon.GetWrapOrEmpty().ImGuiHandle, screenPos, screenPos + iconSize);
             }
         }
     }

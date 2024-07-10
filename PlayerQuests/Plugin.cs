@@ -13,6 +13,8 @@ using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using PlayerQuests;
 using System.Collections.Generic;
 using ImGuiNET;
+using FFXIVClientStructs.FFXIV.Client.System.Input;
+using Dalamud.Game.Addon.Events;
 
 namespace PlayerQuests;
 
