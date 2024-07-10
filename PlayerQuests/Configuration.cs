@@ -17,6 +17,17 @@ public class Configuration : IPluginConfiguration
     
     public Vector3 lastWorldPos { get; set; }
 
+    public string tempQuestType { get; set; } = null!;
+
+
+    public string tempQuestName { get; set;} = null!;
+
+    public string tempQuestDescription { get; set; } = null!;
+
+    public int tempReward {  get; set; } = 0;
+
+
+    
     // the below exist just to make saving less cumbersome
     [NonSerialized]
     private IDalamudPluginInterface? pluginInterface;

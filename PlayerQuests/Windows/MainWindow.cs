@@ -48,6 +48,26 @@ public class MainWindow : Window, IDisposable
 
     public override void Draw()
     {
+        if (!string.IsNullOrEmpty(Plugin.Configuration!.tempQuestType))
+        {
+            PluginHelpers.questType = Plugin.Configuration.tempQuestType;
+        }
+
+        if (!string.IsNullOrEmpty(Plugin.Configuration.tempQuestName))
+        {
+            PluginHelpers.questName = Plugin.Configuration.tempQuestName;
+        }
+
+        if (!string.IsNullOrEmpty(Plugin.Configuration.tempQuestDescription))
+        {
+            PluginHelpers.questDescription = Plugin.Configuration.tempQuestDescription;
+        }
+
+        if (Plugin.Configuration.tempReward != 0)
+        {
+            PluginHelpers.questReward = Plugin.Configuration.tempReward;
+        }
+
         if (ImGui.BeginCombo("Quest Type", PluginHelpers.questType))
         {
             foreach (var questType in PluginHelpers.QuestIcons)
@@ -55,24 +75,29 @@ public class MainWindow : Window, IDisposable
                 var typeString = questType.Key;
                 if (ImGui.Selectable(questType.Key.ToString(), (typeString == PluginHelpers.questType)))
                 {
-                    PluginHelpers.questType = typeString;
+                    Plugin.Configuration!.tempQuestType = typeString;
+                    Plugin.Configuration.Save();
                 }
             }
             ImGui.EndCombo();
         }
         if (ImGui.InputText("Quest Name", ref PluginHelpers.questName, PluginHelpers.maxCharacters, ImGuiInputTextFlags.None))
         {
-
+            Plugin.Configuration!.tempQuestName = PluginHelpers.questName;
+            Plugin.DummyWindow.Title = Plugin.Configuration.tempQuestName;
+            Plugin.Configuration.Save();
         }
 
         if (ImGui.InputTextMultiline("Quest Description", ref PluginHelpers.questDescription, PluginHelpers.maxDescriptionCharacters, new Vector2(300, 150)))
         {
-
+            Plugin.Configuration!.tempQuestDescription = PluginHelpers.questDescription;
+            Plugin.Configuration.Save();
         }
 
         if (ImGui.InputInt("Reward (Gil)", ref PluginHelpers.questReward))
         {
-
+            Plugin.Configuration!.tempReward = PluginHelpers.questReward;
+            Plugin.Configuration.Save();
         }
 
         if (ImGui.Button("Choose Position"))
@@ -93,7 +118,7 @@ public class MainWindow : Window, IDisposable
         {
             foreach (var duration in PluginHelpers.QuestDurations)
             {
-                var durationString = duration.Key; 
+                var durationString = duration.Key;
                 if (ImGui.Selectable(duration.Key.ToString(), (durationString == PluginHelpers.questDuration)))
                 {
                     PluginHelpers.questDuration = durationString;

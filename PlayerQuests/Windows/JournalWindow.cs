@@ -58,7 +58,7 @@ public class JournalWindow : Window
     protected readonly IFontHandle Axis14FontHandle;
     protected readonly IFontHandle Axis18FontHandle;
 
-    public JournalWindow(string name = "Journal Window") : base(name, ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoBackground, false)
+    public JournalWindow(string name = "Journal Window") : base(name, ImGuiWindowFlags.NoDocking | ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoBackground | ImGuiWindowFlags.NoScrollWithMouse, false)
     {
         SizeConstraints = new WindowSizeConstraints()
         {
@@ -81,7 +81,7 @@ public class JournalWindow : Window
 
         UpdateQuestIcon();
 
-        Axis14FontHandle = GameFontBuilder.GetFont(GameFontFamilyAndSize.Axis14);
+        Axis14FontHandle = GameFontBuilder.GetFont(GameFontFamilyAndSize.Axis12);
         Axis18FontHandle = GameFontBuilder.GetFont(GameFontFamilyAndSize.Axis18);
     }
 
@@ -101,7 +101,7 @@ public class JournalWindow : Window
     /// <summary>
     /// Override this function to draw inside the journal
     /// </summary>
-    protected virtual void DrawJournal()
+    public virtual void DrawJournal()
     {
         
     }

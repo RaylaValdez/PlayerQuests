@@ -25,7 +25,7 @@ internal static class PluginHelpers
 {
     private static float PreviousSmoothedSigmoidValue = 0;
 
-    public static Dictionary<string, int> QuestIcons = new()
+    public static Dictionary<string, uint> QuestIcons = new()
     {
         { "NormalQuest", 61431 },
         { "RepeatableQuest", 61433 },
@@ -146,7 +146,10 @@ internal static class PluginHelpers
                 {
                     hovering = true;
                     Framework.Instance()->Cursor->ActiveCursorType = (int)AddonCursorType.Clickable;
-
+                    if (MouseButtonState.RightReleased)
+                    {
+                        Plugin.Instance.ToggleDummyWindow();
+                    }
                 }
             }
 

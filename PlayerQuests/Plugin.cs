@@ -33,6 +33,7 @@ public sealed class Plugin : IDalamudPlugin
     private MainWindow MainWindow { get; init; }
     private Canvas CanvasWindow { get; init; }
     private JournalWindow JournalWindow { get; init; }
+    public static DummyQuestInteractWindow DummyWindow { get; private set; } = null!;
 
     public Plugin(
         IDalamudPluginInterface pluginInterface,
@@ -52,11 +53,15 @@ public sealed class Plugin : IDalamudPlugin
         MainWindow = new MainWindow(this);
         CanvasWindow = new Canvas();
         JournalWindow = new JournalWindow("Journal Window 1");
+        DummyWindow = new DummyQuestInteractWindow();
+
 
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);
         WindowSystem.AddWindow(CanvasWindow);
         WindowSystem.AddWindow(JournalWindow);
+        WindowSystem.AddWindow(DummyWindow);    
+        
 
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
@@ -97,4 +102,5 @@ public sealed class Plugin : IDalamudPlugin
     public void ToggleConfigUI() => ConfigWindow.Toggle();
     public void ToggleMainUI() => MainWindow.Toggle();
     public void ToggleJournalWindow() => JournalWindow.Toggle();
+    public void ToggleDummyWindow() => DummyWindow.Toggle();
 }
