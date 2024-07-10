@@ -13,4 +13,40 @@
   <ItemGroup>
     <None Include="XivCommon\XivCommon.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Data\regular_use+personal_name_utf8.txt" />
+    <EmbeddedResource Include="Data\regular_use+personal_name_utf8.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Drawing\Textures\Journal\BottomBorder.png" />
+    <Content Include="Drawing\Textures\Journal\BottomBorder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Drawing\Textures\Journal\BottomCorner.png" />
+    <Content Include="Drawing\Textures\Journal\BottomCorner.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Drawing\Textures\Journal\CloseButton.png" />
+    <Content Include="Drawing\Textures\Journal\CloseButton.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Drawing\Textures\Journal\SideBorder.png" />
+    <Content Include="Drawing\Textures\Journal\SideBorder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Drawing\Textures\Journal\TopBorder.png" />
+    <Content Include="Drawing\Textures\Journal\TopBorder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Drawing\Textures\Journal\TopCorner.png" />
+    <Content Include="Drawing\Textures\Journal\TopCorner.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Remove="Drawing\Textures\Journal\TopMiddleBorder.png" />
+    <Content Include="Drawing\Textures\Journal\TopMiddleBorder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>

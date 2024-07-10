@@ -60,7 +60,6 @@ namespace PlayerQuests.Drawing
             }
             var previousHovering = PluginHelpers.hovering;
             PluginHelpers.hovering = false;
-            MouseButtonState.UpdateState();
             var cursorPos = ImGui.GetMousePos();
             Services.GameGui.ScreenToWorld(cursorPos, out var worldPos);
 

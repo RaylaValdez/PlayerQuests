@@ -25,18 +25,21 @@ public sealed class Plugin : IDalamudPlugin
     public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     private ICommandManager CommandManager { get; init; }
     public static Configuration? Configuration { get; private set; }
-    
+
+    public static Plugin Instance { get; private set; } = null!;
 
     public readonly WindowSystem WindowSystem = new("PlayerQuest");
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
-    private Canvas CanvasWindow {  get; init; }
+    private Canvas CanvasWindow { get; init; }
+    private JournalWindow JournalWindow { get; init; }
 
     public Plugin(
         IDalamudPluginInterface pluginInterface,
         ICommandManager commandManager,
         ITextureProvider textureProvider)
     {
+        Instance = this;
         PluginInterface = (IDalamudPluginInterface)pluginInterface;
         CommandManager = commandManager;
 
@@ -48,11 +51,12 @@ public sealed class Plugin : IDalamudPlugin
         ConfigWindow = new ConfigWindow(this);
         MainWindow = new MainWindow(this);
         CanvasWindow = new Canvas();
-
+        JournalWindow = new JournalWindow("Journal Window 1");
 
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);
         WindowSystem.AddWindow(CanvasWindow);
+        WindowSystem.AddWindow(JournalWindow);
 
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
         {
@@ -76,7 +80,6 @@ public sealed class Plugin : IDalamudPlugin
         ConfigWindow.Dispose();
         MainWindow.Dispose();
 
-
         CommandManager.RemoveHandler(CommandName);
     }
 
@@ -84,12 +87,14 @@ public sealed class Plugin : IDalamudPlugin
     {
         MainWindow.Toggle();
     }
-    private void DrawUI() => WindowSystem.Draw();
+
+    private void DrawUI()
+    {
+        MouseButtonState.UpdateState();
+        WindowSystem.Draw();
+    }
 
     public void ToggleConfigUI() => ConfigWindow.Toggle();
     public void ToggleMainUI() => MainWindow.Toggle();
-
-
-
-    
+    public void ToggleJournalWindow() => JournalWindow.Toggle();
 }
