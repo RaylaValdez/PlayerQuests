@@ -14,6 +14,7 @@ namespace PlayerQuests.Helpers
     {
         private static readonly int NaviMapSize = 218;
 
+
         public static Vector2 MapSize;
         public static Vector2 MapPos;
         public static Vector2 WindowPos;
@@ -24,6 +25,42 @@ namespace PlayerQuests.Helpers
 
 
         public static bool ChecksPassed;
+
+        public static Vector2 CalculateMapPosition(Vector3 worldPosition)
+        {
+            var relativeQuestPos = new Vector2(0, 0);
+
+            relativeQuestPos.X = PlayerPos.X - PluginHelpers.questLocation.X; // This will need to be updated for Database Reading.
+            relativeQuestPos.Y = PlayerPos.Y - PluginHelpers.questLocation.Z; // Ditto.
+
+            //Account for various scales that can affect the minimap
+            relativeQuestPos *= Services.NaviMapManager.ZoneScale;
+            relativeQuestPos *= Services.NaviMapManager.NaviScale;
+            relativeQuestPos *= Services.NaviMapManager.Zoom;
+
+
+            //The Circle position for the "Quest" should be the players circle position minus the relativePosition of the Quest
+            var QuestCirclePos = PlayerCirclePos - relativeQuestPos;
+
+
+
+            //if the minimap is unlocked, rotate circles around the player (the center of the minimap)
+            if (!Services.NaviMapManager.IsLocked)
+            {
+                QuestCirclePos = RotateForMiniMap(PlayerCirclePos, QuestCirclePos, Services.NaviMapManager.Rotation);
+            }
+
+            //If the circle would leave the minimap, clamp it to the minimap radius
+            var distance = Vector2.Distance(PlayerCirclePos, QuestCirclePos);
+            if (distance > _minimapRadius)
+            {
+                var originToObject = QuestCirclePos - PlayerCirclePos;
+                originToObject *= _minimapRadius / distance;
+                QuestCirclePos = PlayerCirclePos + originToObject;
+            }
+
+            return QuestCirclePos;
+        }
 
         private static Vector2 RotateForMiniMap(Vector2 center, Vector2 pos, float angle)
         {

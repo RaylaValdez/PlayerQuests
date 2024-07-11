@@ -52,7 +52,10 @@ public sealed class Plugin : IDalamudPlugin
         Configuration = PluginInterface.GetPluginConfig() as Configuration ?? new Configuration();
         Configuration.Initialize(PluginInterface);
 
+
+        
         pluginInterface.Create<Services>();
+        Services.NaviMapManager = new NaviMapManager();
 
         ConfigWindow = new ConfigWindow(this);
         MainWindow = new MainWindow(this);
@@ -83,6 +86,8 @@ public sealed class Plugin : IDalamudPlugin
 
         // Adds another button that is doing the same but for the main ui of the plugin
         PluginInterface.UiBuilder.OpenMainUi += ToggleMainUI;
+
+        Services.ClientState.TerritoryChanged += TerritoryChanged;
     }
 
     public void Dispose()
@@ -92,6 +97,7 @@ public sealed class Plugin : IDalamudPlugin
         ConfigWindow.Dispose();
         MainWindow.Dispose();
 
+        Services.ClientState.TerritoryChanged -= TerritoryChanged;
 
         CommandManager.RemoveHandler(CommandName);
     }
@@ -111,4 +117,10 @@ public sealed class Plugin : IDalamudPlugin
     public void ToggleMainUI() => MainWindow.Toggle();
     public void ToggleJournalWindow() => JournalWindow.Toggle();
     public void ToggleDummyWindow() => DummyWindow.Toggle();
+
+    private void TerritoryChanged(ushort _)
+    {
+        Services.NaviMapManager.UpdateMap();
+
+    }
 }

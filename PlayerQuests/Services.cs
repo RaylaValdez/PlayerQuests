@@ -25,7 +25,7 @@ namespace PlayerQuests
         
         [PluginService] public static IDataManager DataManager { get; private set; } = null!;
 
-        [PluginService] internal static IGameInteropProvider GameInteropProvider { get; private set; } = null!;
+        [PluginService] public static IGameInteropProvider GameInteropProvider { get; private set; } = null!;
 
 
 
