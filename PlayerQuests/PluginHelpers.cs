@@ -195,7 +195,7 @@ internal static class PluginHelpers
                             // Only if hovered at the start and end of a right click (and mouse not being captured by ImGui)
                             if (MouseButtonState.RightReleased && startedHoveringOverQuestIcon && !ImGui.GetIO().WantCaptureMouse)
                             {
-                                Plugin.Instance.ToggleDummyWindow();
+                                Plugin.Instance.ToggleDummyWindow(quest);
                             }
                             else if (MouseButtonState.RightPressed)
                             {

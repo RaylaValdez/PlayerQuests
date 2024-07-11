@@ -14,6 +14,8 @@ namespace PlayerQuests.Windows
 {
     public class DummyQuestInteractWindow : JournalWindow
     {
+        protected Quest? DrawingQuest;
+        
         public ISharedImmediateTexture rewardIcon;
         public Vector2 rewardIconSize = new Vector2(36, 37) / 2.2f;
         public nint rewardIconHandle;
@@ -91,7 +93,7 @@ namespace PlayerQuests.Windows
                 ImGui.SetCursorPosX((windowWidth / 2f) - (rewardsBannerWidth / 2f));
                 ImGui.Image(rewardsBannerHandle, rewardsBannerSize);
                 ImGui.SameLine();
-                if (PluginHelpers.questReward > 0)
+                if ((DrawingQuest?.Reward ?? 0) > 0)
                 {
                     var curCursorPos = ImGui.GetCursorPos();
                     ImGui.SetCursorPos(new Vector2(27f, curCursorPos.Y + 32f));
@@ -103,10 +105,10 @@ namespace PlayerQuests.Windows
                     ImGui.Image(gilIconHandle, gilIconSize);
                     ImGui.SameLine();
                     ImGui.SetCursorPos(new Vector2(68f, curCursorPos.Y + 20));
-                    ImGui.Image(elipseShadowHandle, new Vector2(ImGui.CalcTextSize(PluginHelpers.questReward.ToString()).X, 14f));
+                    var seperatedRewardString = DrawingQuest!.Reward.ToString("N0");
+                    ImGui.Image(elipseShadowHandle, new Vector2(ImGui.CalcTextSize(seperatedRewardString).X, 14f));
                     ImGui.SameLine();
                     ImGui.SetCursorPos(new Vector2(68f, curCursorPos.Y + 13));
-                    var seperatedRewardString = PluginHelpers.questReward.ToString("N0");
                     WindowHelpers.ImGuiTextWithDropShadow(seperatedRewardString, 2f, 10, true);
                 }
                 ImGui.Dummy(new Vector2(0, 2));
@@ -117,7 +119,7 @@ namespace PlayerQuests.Windows
                 WindowHelpers.ImGuiTextWithDropShadow("Description", 2f);
                 ImGui.Indent(14);
                 ImGui.PushTextWrapPos(windowWidth - 14);
-                ImGui.TextWrapped(PluginHelpers.questDescription);
+                ImGui.TextWrapped(DrawingQuest?.Description ?? string.Empty);
                 ImGui.PopTextWrapPos();
                 ImGui.Unindent(14);
 
@@ -126,7 +128,7 @@ namespace PlayerQuests.Windows
                     ImGui.Image(objectivesIconHandle, objectivesIconSize);
                     ImGui.SameLine(objectivesIconSize.X + 2f);
                     WindowHelpers.ImGuiTextWithDropShadow("Objectives", 2f);
-                    foreach (QuestObjectiveSettings questObjective in PluginHelpers.questObjectives)
+                    foreach (QuestObjectiveSettings questObjective in PluginHelpers.questObjectives) // TODO change to DrawingQuest.Objectives
                     {
                         ImGui.Indent(14);
                         ImGui.PushTextWrapPos(windowWidth - 14);
@@ -137,11 +139,17 @@ namespace PlayerQuests.Windows
 
                 }
 
-
-
+                
                 ImGui.EndChild();
             }
             
+        }
+
+        public void UpdateQuest(Quest quest)
+        {
+            DrawingQuest = quest;
+            Title = quest.Name;
+            QuestIcon = PluginHelpers.QuestIcons[quest.QuestType];
         }
     }
 }

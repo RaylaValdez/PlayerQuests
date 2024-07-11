@@ -116,7 +116,11 @@ public sealed class Plugin : IDalamudPlugin
     public void ToggleConfigUI() => ConfigWindow.Toggle();
     public void ToggleMainUI() => MainWindow.Toggle();
     public void ToggleJournalWindow() => JournalWindow.Toggle();
-    public void ToggleDummyWindow() => DummyWindow.Toggle();
+    public void ToggleDummyWindow(Quest quest)
+    {
+        DummyWindow.UpdateQuest(quest);
+        DummyWindow.Toggle();
+    }
 
     private void TerritoryChanged(ushort _)
     {

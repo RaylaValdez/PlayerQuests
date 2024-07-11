@@ -53,13 +53,11 @@ public class MainWindow : Window, IDisposable
         if (!string.IsNullOrEmpty(Plugin.Configuration!.tempQuestType))
         {
             PluginHelpers.questType = Plugin.Configuration.tempQuestType;
-            Plugin.DummyWindow.QuestIcon = PluginHelpers.QuestIcons[Plugin.Configuration.tempQuestType];
         }
 
         if (!string.IsNullOrEmpty(Plugin.Configuration.tempQuestName))
         {
             PluginHelpers.questName = Plugin.Configuration.tempQuestName;
-            Plugin.DummyWindow.Title = Plugin.Configuration.tempQuestName;
         }
 
         if (!string.IsNullOrEmpty(Plugin.Configuration.tempQuestDescription))
@@ -88,7 +86,6 @@ public class MainWindow : Window, IDisposable
         if (ImGui.InputText("Quest Name", ref PluginHelpers.questName, PluginHelpers.maxCharacters, ImGuiInputTextFlags.None))
         {
             Plugin.Configuration!.tempQuestName = PluginHelpers.questName;
-            Plugin.DummyWindow.Title = Plugin.Configuration.tempQuestName;
             Plugin.Configuration.Save();
         }
 
