@@ -26,12 +26,12 @@ namespace PlayerQuests.Helpers
 
         public static bool ChecksPassed;
 
-        public static Vector2 CalculateMapPosition(Vector3 worldPosition)
+        public static Vector2 CalculateMapPosition(Quest quest)
         {
             var relativeQuestPos = new Vector2(0, 0);
 
-            relativeQuestPos.X = PlayerPos.X - PluginHelpers.questLocation.X; // This will need to be updated for Database Reading.
-            relativeQuestPos.Y = PlayerPos.Y - PluginHelpers.questLocation.Z; // Ditto.
+            relativeQuestPos.X = PlayerPos.X - quest.QuestPositionX;
+            relativeQuestPos.Y = PlayerPos.Y - quest.QuestPositionZ;
 
             //Account for various scales that can affect the minimap
             relativeQuestPos *= Services.NaviMapManager.ZoneScale;

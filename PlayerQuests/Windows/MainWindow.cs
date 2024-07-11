@@ -126,7 +126,7 @@ public class MainWindow : Window, IDisposable
             ImGui.Text(Plugin.Configuration.lastWorldPos.ToString());
         }
 
-        if (ImGui.BeginChild("Objectives", new Vector2(350, 700), true))
+        if (ImGui.BeginChild("Objectives", new Vector2(350, 350), true))
         {
             using var id = ImRaii.PushId("questObjectives");
 
@@ -147,7 +147,7 @@ public class MainWindow : Window, IDisposable
 
             ImGui.Separator();
 
-            QuestObjectiveSettings objectiveToRemove = null;
+            QuestObjectiveSettings? objectiveToRemove = null;
 
             var locNumber = 1;
             foreach (var questObjectiveSetting in PluginHelpers.questObjectives)

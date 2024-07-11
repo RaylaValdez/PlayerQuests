@@ -27,7 +27,7 @@ public sealed class Plugin : IDalamudPlugin
 
     public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
     private ICommandManager CommandManager { get; init; }
-    public static Configuration? Configuration { get; private set; }
+    public static Configuration Configuration { get; private set; } = null!;
 
     public static Plugin Instance { get; private set; } = null!;
 

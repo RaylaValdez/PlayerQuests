@@ -63,14 +63,19 @@ namespace PlayerQuests.Drawing
             var cursorPos = ImGui.GetMousePos();
             Services.GameGui.ScreenToWorld(cursorPos, out var worldPos);
 
+            foreach (var quest in PluginHelpers.Quests)
+            {
+                PluginHelpers.DrawDummy(quest);
+            }
+            
+            if (!PluginHelpers.TempQuest.QuestType.IsNullOrEmpty())
+            {
+                PluginHelpers.DrawDummy(PluginHelpers.TempQuest);
+            }
+            
             if (previousHovering && !PluginHelpers.hovering)
             {
                 Framework.Instance()->Cursor->ActiveCursorType = (int)AddonCursorType.Arrow;
-            }
-
-            if (!PluginHelpers.questType.IsNullOrEmpty())
-            {
-                PluginHelpers.DrawDummy(PluginHelpers.questName, Plugin.Configuration!.lastWorldPos);
             }
             
             fontDisposer?.Dispose();

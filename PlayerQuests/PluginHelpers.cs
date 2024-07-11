@@ -38,7 +38,7 @@ internal static class PluginHelpers
 
     public static Dictionary<string, int> QuestDurations = new()
     {
-        { "8 Hours", 123456},
+        { "8 Hours", 123456 },
         { "16 Hours", 123456 },
         { "24 Hours", 123456 },
         { "48 Hours", 123456 },
@@ -54,13 +54,9 @@ internal static class PluginHelpers
 
     //public static float playerZoom => CameraManager.
 
-    public static ISharedImmediateTexture? QuestIcon = null;
+    public static bool dummyIconVisible = false;
 
     public static string selectedQuestType = string.Empty;
-
-    public static bool iconVisible = false;
-
-    public static bool dummyIconVisible = false;
 
     public const uint maxCharacters = 50;
 
@@ -98,45 +94,67 @@ internal static class PluginHelpers
 
     public static List<QuestObjectiveSettings> questObjectives = new();
 
+    public static List<Quest> Quests = [];
 
-
-
-
-
-
-
-
-
-
-
-    public static void DrawDummy(string questName, Vector3 lastWorldPos)
+    public static Quest TempQuest => new Quest()
     {
-        QuestIcon = Services.TextureProvider.GetFromGameIcon(QuestIcons[questType]);
-        var screenPosForIcon = new Vector2(0, 0);
-        var screenPosForText = new Vector2(0, 0);
-        var inView = false;
-        questLocation = lastWorldPos;
+        Name = questName,
+        Description = questDescription,
+        QuestType = questType,
+        QuestPositionX = Plugin.Configuration.lastWorldPos.X,
+        QuestPositionY = Plugin.Configuration.lastWorldPos.Y,
+        QuestPositionZ = Plugin.Configuration.lastWorldPos.Z,
+        Reward = questReward,
+        QuestAuthor = questAuthor,
+        QuestZone = "TODO",
+        DatacenterName = questDatacenter,
+        WorldName = questWorld,
+        Id = -1, // TODO
+        Accepted = questAccepted,
+        Completed = questCompleted,
+        ExpireTime = questExpireTime, // TODO
+        TimePosted = questTimePosted, // TODO
+    };
 
+    private static Dictionary<uint, ISharedImmediateTexture> QuestIconTextures = new();
 
+    public static ISharedImmediateTexture GetQuestIconTexture(uint icon)
+    {
+        if (QuestIconTextures.TryGetValue(icon, out var texture))
+        {
+            return texture;
+        }
 
-        Services.GameGui.WorldToScreen(questLocation + iconMaxOffset, out screenPosForIcon, out inView);
-        Services.GameGui.WorldToScreen(questLocation + iconMaxOffset, out screenPosForText, out inView);
+        // Load the quest icon from game icon
+        var gameIcon = Services.TextureProvider.GetFromGameIcon(icon);
+        QuestIconTextures[icon] = gameIcon;
+        return gameIcon;
+    }
+
+    public static ISharedImmediateTexture GetQuestIconTexture(string questType) => GetQuestIconTexture(QuestIcons[questType]);
+
+    public static void DrawDummy(Quest quest)
+    {
+        var questIconTexture = GetQuestIconTexture(quest.QuestType);
+        var questPosition = quest.QuestPosition;
+
+        Services.GameGui.WorldToScreen(questPosition + iconMaxOffset, out var screenPosForIcon, out var inView);
+        var screenPosForText = screenPosForIcon;
 
         screenPosForIcon -= iconSize / 2;
 
         screenPosForText -= new Vector2(ImGui.CalcTextSize(questName).X / 2, -50f);
         var textWidth = ImGui.CalcTextSize(questName);
-        var IDrawList = ImGui.GetWindowDrawList();
+        var drawList = ImGui.GetWindowDrawList();
 
-        var questIconHandle = QuestIcon.GetWrapOrEmpty().ImGuiHandle;
+        var questIconHandle = questIconTexture.GetWrapOrEmpty().ImGuiHandle;
 
-        var distanceToPlayer = Services.ClientState.LocalPlayer!.Position - questLocation;
-        var maxDistance = 25f;
-        var startFadeDistance = 20f;
+        var distanceToPlayer = Services.ClientState.LocalPlayer!.Position - questPosition;
+        const float maxDistance = 25f;
+        const float startFadeDistance = 20f;
 
         var opaqueColor = new Vector4(1, 1, 1, 1);
         var transparentColor = new Vector4(1, 1, 1, 0);
-
 
         if (dummyIconVisible)
         {
@@ -152,17 +170,19 @@ internal static class PluginHelpers
                 {
                     alpha = 1.0f - (distance - startFadeDistance) / (maxDistance - startFadeDistance);
                 }
+
                 var curColor = new Vector4(1, 1, 1, alpha);
-                if (Raycaster.PointVisible(questLocation))
+                if (Raycaster.PointVisible(questPosition))
                 {
-                    IDisposable fontDisposer = null;
+                    IDisposable? fontDisposer = null;
                     if (Canvas.FontHandle?.Available ?? false)
                     {
                         fontDisposer = Canvas.FontHandle.Push();
                     }
-                    IDrawList.AddImage(questIconHandle, screenPosForIcon, screenPosForIcon + iconSize, new Vector2(0, 0), new Vector2(1, 1), ImGui.ColorConvertFloat4ToU32(curColor));
 
-                    IDrawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(), screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, curColor.W * 255) / 255), questName);
+                    drawList.AddImage(questIconHandle, screenPosForIcon, screenPosForIcon + iconSize, new Vector2(0, 0), new Vector2(1, 1), ImGui.ColorConvertFloat4ToU32(curColor));
+
+                    drawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(), screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, curColor.W * 255) / 255), questName);
 
                     unsafe
                     {
@@ -177,6 +197,7 @@ internal static class PluginHelpers
                             }
                         }
                     }
+
                     fontDisposer?.Dispose();
                 }
             }
@@ -198,30 +219,6 @@ internal static class PluginHelpers
         }
 
         return hoveringOver;
-    }
-
-    public static void DrawIcon(string questIcon)
-    {
-        QuestIcon = Services.TextureProvider.GetFromGameIcon(QuestIcons[questIcon]);
-
-        var screenPos = new Vector2(0, 0);
-        var inView = false;
-        unsafe
-        {
-            var cameraInstance = CameraManager.Instance();
-            var activeCamera = cameraInstance->GetActiveCamera();
-            var cameraDistance = CameraManager.Instance()->GetActiveCamera()->Distance;
-
-            Services.GameGui.WorldToScreen(playerPosition + Vector3.Lerp(iconMinOffset, iconMaxOffset, SmoothedSigmoid(cameraDistance / 15f, 0.1f)), out screenPos, out inView);
-
-            screenPos -= iconSize / 2;
-            if (iconVisible)
-            {
-                var IDrawList = ImGui.GetBackgroundDrawList();
-
-                IDrawList.AddImage(QuestIcon.GetWrapOrEmpty().ImGuiHandle, screenPos, screenPos + iconSize);
-            }
-        }
     }
 
 
