@@ -101,10 +101,7 @@ public class JournalWindow : Window
     /// <summary>
     /// Override this function to draw inside the journal
     /// </summary>
-    public virtual void DrawJournal()
-    {
-        
-    }
+    public virtual void DrawJournal() { }
 
     protected float PreviousHeight = 0f;
 
@@ -202,7 +199,7 @@ public class JournalWindow : Window
 
         // Top cross line
         var posTopLine = posTopLeft + new Vector2(0f, PreviousHeight + Margin.Y + CrossLineHeight);
-        drawList.AddLine(posTopLine, posTopLine + new Vector2(sizeWindow.X, 0f), ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0, 0, 0.33f)), 1f); // dark top
+        drawList.AddLine(posTopLine, posTopLine + new Vector2(sizeWindow.X, 0f), ImGui.ColorConvertFloat4ToU32(new Vector4(0, 0, 0, 0.33f)), 1f);                      // dark top
         drawList.AddLine(posTopLine + new Vector2(0, 1f), posTopLine + new Vector2(sizeWindow.X, 1f), ImGui.ColorConvertFloat4ToU32(new Vector4(1, 1, 1, 0.33f)), 1f); // light below
 
         {
@@ -280,12 +277,13 @@ public class JournalWindow : Window
             var closeButtonMouseDistance = Vector2.Distance(closeButtonPos, cursorPos);
             var closeButtonHovered = closeButtonMouseDistance < (sizeCloseButton.X / 2f);
 
-            var uvCloseButton = new Vector2(closeButtonHovered ? 0.5f : 0f, 0f);
-            drawList.AddImage(closeButton.ImGuiHandle, posCloseButton, posCloseButton + sizeCloseButton, uvCloseButton, new Vector2(closeButtonHovered ? 1.0f : 0.5f, 1.0f));
-            if (closeButtonHovered && MouseButtonState.LeftReleased)
+            ImGui.SetCursorPos(closeButtonPos - posTopLeft - (sizeCloseButton / 2f));
+            if (ImGui.InvisibleButton("InvisibleCloseButton", sizeCloseButton))
             {
                 IsOpen = false;
             }
+
+            drawList.AddImage(closeButton.ImGuiHandle, posCloseButton, posCloseButton + sizeCloseButton, new Vector2(closeButtonHovered ? 0.5f : 0f, 0f), new Vector2(closeButtonHovered ? 1.0f : 0.5f, 1.0f));
         }
 
         #endregion
