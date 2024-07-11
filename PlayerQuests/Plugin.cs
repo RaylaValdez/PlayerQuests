@@ -17,6 +17,7 @@ using FFXIVClientStructs.FFXIV.Client.System.Input;
 using Dalamud.Game.Addon.Events;
 using Dalamud.Interface.GameFonts;
 using PlayerQuests.Helpers;
+using PlayerQuests.Manager;
 
 namespace PlayerQuests;
 
@@ -30,7 +31,9 @@ public sealed class Plugin : IDalamudPlugin
 
     public static Plugin Instance { get; private set; } = null!;
 
-    public readonly WindowSystem WindowSystem = new("PlayerQuest");
+    public static WindowSystem WindowSystem = new("PlayerQuest");
+    public static MiniMap NaviMapWindow = new();
+
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
     private Canvas CanvasWindow { get; init; }
@@ -64,6 +67,7 @@ public sealed class Plugin : IDalamudPlugin
         WindowSystem.AddWindow(CanvasWindow);
         WindowSystem.AddWindow(JournalWindow);
         WindowSystem.AddWindow(DummyWindow);    
+        WindowSystem.AddWindow(NaviMapWindow);
         
 
         CommandManager.AddHandler(CommandName, new CommandInfo(OnCommand)
@@ -87,6 +91,7 @@ public sealed class Plugin : IDalamudPlugin
 
         ConfigWindow.Dispose();
         MainWindow.Dispose();
+
 
         CommandManager.RemoveHandler(CommandName);
     }

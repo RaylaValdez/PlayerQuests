@@ -21,10 +21,12 @@ using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using Dalamud.Interface.Textures;
 using PlayerQuests.Helpers;
+using PlayerQuests.Drawing;
 
 internal static class PluginHelpers
 {
     private static float PreviousSmoothedSigmoidValue = 0;
+
 
     public static Dictionary<string, uint> QuestIcons = new()
     {
@@ -61,7 +63,7 @@ internal static class PluginHelpers
     public static bool dummyIconVisible = false;
 
     public const uint maxCharacters = 50;
-    
+
     public const uint maxDescriptionCharacters = 560;
 
     public static string questType = string.Empty;
@@ -91,7 +93,6 @@ internal static class PluginHelpers
     public static string questAuthor = string.Empty;
 
 
-
     public static bool hovering = false;
 
 
@@ -116,50 +117,71 @@ internal static class PluginHelpers
         var inView = false;
         questLocation = lastWorldPos;
 
+
+
         Services.GameGui.WorldToScreen(questLocation + iconMaxOffset, out screenPosForIcon, out inView);
         Services.GameGui.WorldToScreen(questLocation + iconMaxOffset, out screenPosForText, out inView);
 
         screenPosForIcon -= iconSize / 2;
 
-        // Calculate the size of the questName text
-        //var textSize = ImGui.CalcTextSize(questName);
-        // Adjust screenPosForText to center the text
+        screenPosForText -= new Vector2(ImGui.CalcTextSize(questName).X / 2, -50f);
+        var textWidth = ImGui.CalcTextSize(questName);
+        var IDrawList = ImGui.GetWindowDrawList();
+
+        var questIconHandle = QuestIcon.GetWrapOrEmpty().ImGuiHandle;
+
+        var distanceToPlayer = Services.ClientState.LocalPlayer!.Position - questLocation;
+        var maxDistance = 25f;
+        var startFadeDistance = 20f;
+
+        var opaqueColor = new Vector4(1, 1, 1, 1);
+        var transparentColor = new Vector4(1, 1, 1, 0);
 
 
         if (dummyIconVisible)
         {
-            //push
-            screenPosForText -= new Vector2(ImGui.CalcTextSize(questName).X / 2, -50f);
-            var textWidth = ImGui.CalcTextSize(questName);
-
-
-            var IDrawList = ImGui.GetWindowDrawList();
-
-            IDrawList.AddImage(QuestIcon.GetWrapOrEmpty().ImGuiHandle, screenPosForIcon, screenPosForIcon + iconSize);
-            
-            IDrawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(), screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, 256) / 255), questName);
-
-            // pop
-            unsafe
+            var distance = distanceToPlayer.Length();
+            if (distance < maxDistance)
             {
-                var prevCursorType = Framework.Instance()->Cursor->ActiveCursorType;
-                if (hoveringOverSelectableRegion(screenPosForText + textWidth / 2, textWidth * 1.5f) || hoveringOverSelectableRegion(screenPosForIcon + iconSize / 2, iconSize * 1.5f))
+                float alpha;
+                if (distance <= startFadeDistance)
                 {
-                    hovering = true;
-                    Framework.Instance()->Cursor->ActiveCursorType = (int)AddonCursorType.Clickable;
-                    if (MouseButtonState.RightReleased)
+                    alpha = 1.0f;
+                }
+                else
+                {
+                    alpha = 1.0f - (distance - startFadeDistance) / (maxDistance - startFadeDistance);
+                }
+                var curColor = new Vector4(1, 1, 1, alpha);
+                if (Raycaster.PointVisible(questLocation))
+                {
+                    IDisposable fontDisposer = null;
+                    if (Canvas.FontHandle?.Available ?? false)
                     {
-                        Plugin.Instance.ToggleDummyWindow();
+                        fontDisposer = Canvas.FontHandle.Push();
                     }
+                    IDrawList.AddImage(questIconHandle, screenPosForIcon, screenPosForIcon + iconSize, new Vector2(0, 0), new Vector2(1, 1), ImGui.ColorConvertFloat4ToU32(curColor));
+
+                    IDrawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(), screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, curColor.W * 255) / 255), questName);
+
+                    unsafe
+                    {
+                        var prevCursorType = Framework.Instance()->Cursor->ActiveCursorType;
+                        if (hoveringOverSelectableRegion(screenPosForText + textWidth / 2, textWidth * 1.5f) || hoveringOverSelectableRegion(screenPosForIcon + iconSize / 2, iconSize * 1.5f))
+                        {
+                            hovering = true;
+                            Framework.Instance()->Cursor->ActiveCursorType = (int)AddonCursorType.Clickable;
+                            if (MouseButtonState.RightReleased)
+                            {
+                                Plugin.Instance.ToggleDummyWindow();
+                            }
+                        }
+                    }
+                    fontDisposer?.Dispose();
                 }
             }
-
         }
-
-
-
     }
-
 
     public static bool hoveringOverSelectableRegion(Vector2 centerPosition, Vector2 size)
     {

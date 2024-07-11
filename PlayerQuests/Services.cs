@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PlayerQuests.Manager;
+using Dalamud.Interface.Windowing;
 
 namespace PlayerQuests
 {
@@ -23,6 +25,13 @@ namespace PlayerQuests
         
         [PluginService] public static IDataManager DataManager { get; private set; } = null!;
 
+        [PluginService] internal static IGameInteropProvider GameInteropProvider { get; private set; } = null!;
+
+
+
+        public static NaviMapManager NaviMapManager { get; set; } = null!;
+
+        
 
     }
 }

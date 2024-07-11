@@ -24,9 +24,9 @@ using Dalamud.Game.Addon.Events;
 
 namespace PlayerQuests.Drawing
 {
-    internal unsafe class Canvas : Window
+    public unsafe class Canvas : Window
     {
-        private IFontHandle? FontHandle = null;
+        public static IFontHandle? FontHandle = null;
         public Canvas() : base("PlayerQuestGroundTargettingOverlay",
             ImGuiWindowFlags.NoInputs
             | ImGuiWindowFlags.NoTitleBar
