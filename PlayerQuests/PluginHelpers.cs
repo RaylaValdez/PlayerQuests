@@ -20,6 +20,7 @@ using Dalamud.Game.Addon.Events;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using Dalamud.Interface.Textures;
+using PlayerQuests.Helpers;
 
 internal static class PluginHelpers
 {
@@ -94,7 +95,7 @@ internal static class PluginHelpers
     public static bool hovering = false;
 
 
-
+    public static List<QuestObjectiveSettings> questObjectives = new();
 
 
 

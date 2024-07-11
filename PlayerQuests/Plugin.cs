@@ -15,6 +15,8 @@ using System.Collections.Generic;
 using ImGuiNET;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
 using Dalamud.Game.Addon.Events;
+using Dalamud.Interface.GameFonts;
+using PlayerQuests.Helpers;
 
 namespace PlayerQuests;
 
@@ -55,6 +57,7 @@ public sealed class Plugin : IDalamudPlugin
         JournalWindow = new JournalWindow("Journal Window 1");
         DummyWindow = new DummyQuestInteractWindow();
 
+        WindowHelpers.TrumpGothicFontHandle = GameFontBuilder.GetFont(GameFontFamilyAndSize.TrumpGothic23);
 
         WindowSystem.AddWindow(ConfigWindow);
         WindowSystem.AddWindow(MainWindow);

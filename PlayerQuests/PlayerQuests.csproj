@@ -20,6 +20,7 @@
     <None Remove="Drawing\Textures\Journal\QuestContent\ObjectiveIcon.png" />
     <None Remove="Drawing\Textures\Journal\QuestContent\RewardsBanner.png" />
     <None Remove="Drawing\Textures\Journal\QuestContent\RewardsIcon.png" />
+    <None Remove="Drawing\Textures\Journal\QuestContent\shadow.png" />
     <None Remove="Drawing\Textures\Journal\QuestContent\SummaryIcon.png" />
     <EmbeddedResource Include="Data\regular_use+personal_name_utf8.txt" />
   </ItemGroup>
@@ -48,6 +49,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Drawing\Textures\Journal\QuestContent\RewardsIcon.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Drawing\Textures\Journal\QuestContent\shadow.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Drawing\Textures\Journal\QuestContent\SummaryIcon.png">

@@ -8,6 +8,7 @@ using ImGuiNET;
 using Dalamud.Interface.Textures;
 using System.IO;
 using System.Numerics;
+using PlayerQuests.Helpers;
 
 namespace PlayerQuests.Windows
 {
@@ -26,8 +27,16 @@ namespace PlayerQuests.Windows
         public nint descriptionIconHandle;
 
         public ISharedImmediateTexture gilIcon;
-        public Vector2 gilIconSize = new Vector2(36, 36);
+        public Vector2 gilIconSize = new Vector2(32, 32);
         public nint gilIconHandle;
+
+        public ISharedImmediateTexture elipseShadow;
+        public Vector2 elipseShadowSize = new Vector2(74, 7);
+        public nint elipseShadowHandle;
+
+        public ISharedImmediateTexture objectivesIcon;
+        public Vector2 objectivesIconSize = new Vector2(36, 37) / 2.2f;
+        public nint objectivesIconHandle;
 
         public DummyQuestInteractWindow() : base("Dummy Quest Window")
         {
@@ -40,6 +49,10 @@ namespace PlayerQuests.Windows
             descriptionIcon = Services.TextureProvider.GetFromFile(Path.Combine(iconPath, "DescriptionIcon.png"));
 
             gilIcon = Services.TextureProvider.GetFromGameIcon(65002);
+
+            elipseShadow = Services.TextureProvider.GetFromFile(Path.Combine(iconPath, "shadow.png"));
+
+            objectivesIcon = Services.TextureProvider.GetFromFile(Path.Combine(iconPath, "ObjectiveIcon.png"));
 
             this.SizeConstraints = new WindowSizeConstraints()
             {
@@ -61,6 +74,11 @@ namespace PlayerQuests.Windows
             rewardsBannerHandle = rewardsBannerWrap.ImGuiHandle;
             var descriptionIconWrap = descriptionIcon.GetWrapOrEmpty();
             descriptionIconHandle = descriptionIconWrap.ImGuiHandle;
+            var elipseShadowWrap = elipseShadow.GetWrapOrEmpty();
+            elipseShadowHandle = elipseShadowWrap.ImGuiHandle;
+            var objectivesIconWrap = objectivesIcon.GetWrapOrEmpty();
+            objectivesIconHandle = objectivesIconWrap.ImGuiHandle;
+
 
             var rewardsBannerWidth = rewardsBannerSize.X;
 
@@ -75,9 +93,21 @@ namespace PlayerQuests.Windows
                 ImGui.SameLine();
                 if (PluginHelpers.questReward > 0)
                 {
+                    var curCursorPos = ImGui.GetCursorPos();
+                    ImGui.SetCursorPos(new Vector2(27f, curCursorPos.Y + 32f));
+                    ImGui.Image(elipseShadowHandle, elipseShadowSize);
+                    ImGui.SameLine();
+                    ImGui.SetCursorPos(new Vector2(27f, curCursorPos.Y + 9f));
                     var gilIconWrap = gilIcon.GetWrapOrEmpty();
                     var gilIconHandle = gilIconWrap.ImGuiHandle;
                     ImGui.Image(gilIconHandle, gilIconSize);
+                    ImGui.SameLine();
+                    ImGui.SetCursorPos(new Vector2(68f, curCursorPos.Y + 20));
+                    ImGui.Image(elipseShadowHandle, new Vector2(ImGui.CalcTextSize(PluginHelpers.questReward.ToString()).X, 14f));
+                    ImGui.SameLine();
+                    ImGui.SetCursorPos(new Vector2(68f, curCursorPos.Y + 13));
+                    var seperatedRewardString = PluginHelpers.questReward.ToString("N0");
+                    WindowHelpers.ImGuiTextWithDropShadow(seperatedRewardString, 2f, 10, true);
                 }
                 ImGui.Dummy(new Vector2(0, 2));
 
@@ -91,8 +121,21 @@ namespace PlayerQuests.Windows
                 ImGui.PopTextWrapPos();
                 ImGui.Unindent(14);
 
-                ImGui.Text("Window Size :" + windowsize);
-                ImGui.Text("Banner Size :" + rewardsBannerSize);
+                if (PluginHelpers.questObjectives.Count > 0)
+                {
+                    ImGui.Image(objectivesIconHandle, objectivesIconSize);
+                    ImGui.SameLine(objectivesIconSize.X + 2f);
+                    WindowHelpers.ImGuiTextWithDropShadow("Objectives", 2f);
+                    foreach (QuestObjectiveSettings questObjective in PluginHelpers.questObjectives)
+                    {
+                        ImGui.Indent(14);
+                        ImGui.PushTextWrapPos(windowWidth - 14);
+                        ImGui.TextWrapped(questObjective.Objective.ToString());
+                        ImGui.PopTextWrapPos();
+                        ImGui.Unindent(14);
+                    }
+
+                }
 
 
 
