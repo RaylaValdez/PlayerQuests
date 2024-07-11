@@ -78,6 +78,11 @@ namespace PlayerQuests.Drawing
                 Framework.Instance()->Cursor->ActiveCursorType = (int)AddonCursorType.Arrow;
             }
             
+            if (MouseButtonState.RightReleased)
+            {
+                PluginHelpers.startedHoveringOverQuestIcon = false;
+            }
+            
             fontDisposer?.Dispose();
 
             if (Plugin.Configuration!.showPosPicker)

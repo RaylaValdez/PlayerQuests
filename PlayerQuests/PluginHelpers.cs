@@ -90,6 +90,7 @@ internal static class PluginHelpers
 
 
     public static bool hovering = false;
+    public static bool startedHoveringOverQuestIcon = false;
 
 
     public static List<QuestObjectiveSettings> questObjectives = new();
@@ -132,7 +133,7 @@ internal static class PluginHelpers
     }
 
     public static ISharedImmediateTexture GetQuestIconTexture(string questType) => GetQuestIconTexture(QuestIcons[questType]);
-
+    
     public static void DrawDummy(Quest quest)
     {
         var questIconTexture = GetQuestIconTexture(quest.QuestType);
@@ -191,9 +192,14 @@ internal static class PluginHelpers
                         {
                             hovering = true;
                             Framework.Instance()->Cursor->ActiveCursorType = (int)AddonCursorType.Clickable;
-                            if (MouseButtonState.RightReleased)
+                            // Only if hovered at the start and end of a right click (and mouse not being captured by ImGui)
+                            if (MouseButtonState.RightReleased && startedHoveringOverQuestIcon && !ImGui.GetIO().WantCaptureMouse)
                             {
                                 Plugin.Instance.ToggleDummyWindow();
+                            }
+                            else if (MouseButtonState.RightPressed)
+                            {
+                                startedHoveringOverQuestIcon = true;
                             }
                         }
                     }
