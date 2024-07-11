@@ -9,7 +9,7 @@ using Dalamud.Interface.Textures;
 
 namespace PlayerQuests
 {
-    public class Quest
+    public class Quest : ICloneable
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
@@ -39,6 +39,10 @@ namespace PlayerQuests
         }
 
 
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 
     

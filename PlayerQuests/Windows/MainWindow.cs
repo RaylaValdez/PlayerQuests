@@ -16,7 +16,6 @@ using PlayerQuests;
 using PlayerQuests.Drawing;
 using PlayerQuests.Helpers;
 using XivCommon;
-
 using Services = PlayerQuests.Services;
 
 
@@ -43,13 +42,7 @@ public class MainWindow : Window, IDisposable
 
 
         this.plugin = plugin;
-    }
 
-
-    public void Dispose() { GC.SuppressFinalize(this); }
-
-    public override void Draw()
-    {
         if (!string.IsNullOrEmpty(Plugin.Configuration!.tempQuestType))
         {
             PluginHelpers.questType = Plugin.Configuration.tempQuestType;
@@ -69,7 +62,16 @@ public class MainWindow : Window, IDisposable
         {
             PluginHelpers.questReward = Plugin.Configuration.tempReward;
         }
+    }
 
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+    }
+
+    public override void Draw()
+    {
         if (ImGui.BeginCombo("Quest Type", PluginHelpers.questType))
         {
             foreach (var questType in PluginHelpers.QuestIcons)
@@ -78,11 +80,14 @@ public class MainWindow : Window, IDisposable
                 if (ImGui.Selectable(questType.Key.ToString(), (typeString == PluginHelpers.questType)))
                 {
                     Plugin.Configuration!.tempQuestType = typeString;
+                    PluginHelpers.questType = typeString;
                     Plugin.Configuration.Save();
                 }
             }
+
             ImGui.EndCombo();
         }
+
         if (ImGui.InputText("Quest Name", ref PluginHelpers.questName, PluginHelpers.maxCharacters, ImGuiInputTextFlags.None))
         {
             Plugin.Configuration!.tempQuestName = PluginHelpers.questName;
@@ -101,6 +106,7 @@ public class MainWindow : Window, IDisposable
             {
                 PluginHelpers.questReward = 0;
             }
+
             if (PluginHelpers.questReward > 1000000)
             {
                 PluginHelpers.questReward = 1000000;
@@ -157,10 +163,8 @@ public class MainWindow : Window, IDisposable
 
                 ImGui.SetNextItemWidth(-1);
                 var obj = questObjectiveSetting.Objective.ToString();
-                if (ImGui.InputText("##Objectives", ref obj, 65535, ImGuiInputTextFlags.EnterReturnsTrue))
-                {
+                if (ImGui.InputText("##Objectives", ref obj, 65535, ImGuiInputTextFlags.EnterReturnsTrue)) { }
 
-                }
                 ImGui.SetCursorPosX(ImGui.GetCursorPosX() + (ImGui.GetColumnWidth() / 2) - 7 - (12 * ImGuiHelpers.GlobalScale));
 
                 ImGui.NextColumn();
@@ -168,8 +172,9 @@ public class MainWindow : Window, IDisposable
 
                 if (ImGuiComponents.IconButton(FontAwesomeIcon.Trash))
                 {
-                    objectiveToRemove = questObjectiveSetting; 
+                    objectiveToRemove = questObjectiveSetting;
                 }
+
                 id.Pop();
                 ImGui.NextColumn();
                 ImGui.Separator();
@@ -180,6 +185,7 @@ public class MainWindow : Window, IDisposable
             {
                 PluginHelpers.questObjectives.Remove(objectiveToRemove);
             }
+
             ImGui.SetCursorPosX(ImGui.GetCursorPosX() + (ImGui.GetColumnWidth() / 2) - 8 - (ImGui.CalcTextSize(locNumber.ToString()).X / 2));
             ImGui.TextUnformatted(locNumber.ToString());
             ImGui.NextColumn();
@@ -200,9 +206,7 @@ public class MainWindow : Window, IDisposable
                     });
                     this.questObjectiveTemp = string.Empty;
                 }
-
             }
-            
 
 
             ImGui.EndChild();
@@ -218,16 +222,23 @@ public class MainWindow : Window, IDisposable
                     PluginHelpers.questDuration = durationString;
                 }
             }
+
             ImGui.EndCombo();
         }
 
         if (ImGui.Button("Kill Dummy"))
         {
             PluginHelpers.dummyIconVisible = false;
-
         }
 
+        if (ImGui.Button("Add as temporary quest"))
+        {
+            PluginHelpers.Quests.Add((Quest)PluginHelpers.TempQuest.Clone());
+        }
+
+        if (ImGui.Button("Clear temporary quests"))
+        {
+            PluginHelpers.Quests.Clear();
+        }
     }
-
-
 }

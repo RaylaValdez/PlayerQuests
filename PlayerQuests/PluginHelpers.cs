@@ -144,8 +144,8 @@ internal static class PluginHelpers
 
         screenPosForIcon -= iconSize / 2;
 
-        screenPosForText -= new Vector2(ImGui.CalcTextSize(questName).X / 2, -50f);
-        var textWidth = ImGui.CalcTextSize(questName);
+        screenPosForText -= new Vector2(ImGui.CalcTextSize(quest.Name).X / 2, -50f);
+        var textWidth = ImGui.CalcTextSize(quest.Name);
         var drawList = ImGui.GetWindowDrawList();
 
         var questIconHandle = questIconTexture.GetWrapOrEmpty().ImGuiHandle;
@@ -183,7 +183,7 @@ internal static class PluginHelpers
 
                     drawList.AddImage(questIconHandle, screenPosForIcon, screenPosForIcon + iconSize, new Vector2(0, 0), new Vector2(1, 1), ImGui.ColorConvertFloat4ToU32(curColor));
 
-                    drawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(), screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, curColor.W * 255) / 255), questName);
+                    drawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(), screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, curColor.W * 255) / 255), quest.Name);
 
                     unsafe
                     {
