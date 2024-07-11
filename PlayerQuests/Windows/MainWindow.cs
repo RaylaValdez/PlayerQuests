@@ -118,8 +118,10 @@ public class MainWindow : Window, IDisposable
 
         if (ImGui.Button("Choose Position"))
         {
+            Plugin.Configuration.lastWorldPos = new Vector3(0, 0, 0);
+            PluginHelpers.dummyIconVisible = false;
             Plugin.Configuration!.showPosPicker = true;
-            PluginHelpers.dummyIconVisible = true;
+            
         }
 
         ImGui.SameLine();
@@ -229,6 +231,8 @@ public class MainWindow : Window, IDisposable
         if (ImGui.Button("Kill Dummy"))
         {
             PluginHelpers.dummyIconVisible = false;
+
+
         }
 
         if (ImGui.Button("Add as temporary quest"))

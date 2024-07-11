@@ -97,6 +97,9 @@ internal static class PluginHelpers
 
     public static List<Quest> Quests = [];
 
+    static readonly Dictionary<Quest, (bool IsFadingOut, int FadeFrameCount, float CurrentAlpha)> FadeStates = new();
+
+
     public static Quest TempQuest => new Quest()
     {
         Name = questName,
@@ -133,9 +136,13 @@ internal static class PluginHelpers
     }
 
     public static ISharedImmediateTexture GetQuestIconTexture(string questType) => GetQuestIconTexture(QuestIcons[questType]);
-    
+
     public static void DrawDummy(Quest quest)
     {
+        if (Services.ClientState.LocalPlayer == null)
+        {
+            return;
+        }
         var questIconTexture = GetQuestIconTexture(quest.QuestType);
         var questPosition = quest.QuestPosition;
 
@@ -143,19 +150,22 @@ internal static class PluginHelpers
         var screenPosForText = screenPosForIcon;
 
         screenPosForIcon -= iconSize / 2;
-
         screenPosForText -= new Vector2(ImGui.CalcTextSize(quest.Name).X / 2, -50f);
         var textWidth = ImGui.CalcTextSize(quest.Name);
         var drawList = ImGui.GetWindowDrawList();
-
         var questIconHandle = questIconTexture.GetWrapOrEmpty().ImGuiHandle;
-
         var distanceToPlayer = Services.ClientState.LocalPlayer!.Position - questPosition;
         const float maxDistance = 25f;
         const float startFadeDistance = 20f;
 
         var opaqueColor = new Vector4(1, 1, 1, 1);
         var transparentColor = new Vector4(1, 1, 1, 0);
+
+        if (!FadeStates.TryGetValue(quest, out var fadeState))
+        {
+            fadeState = (false, 0, 1.0f);
+            FadeStates[quest] = fadeState;
+        }
 
         if (dummyIconVisible)
         {
@@ -172,9 +182,13 @@ internal static class PluginHelpers
                     alpha = 1.0f - (distance - startFadeDistance) / (maxDistance - startFadeDistance);
                 }
 
-                var curColor = new Vector4(1, 1, 1, alpha);
-                if (Raycaster.PointVisible(questPosition))
+                var curColor = new Vector4(1, 1, 1, alpha * fadeState.CurrentAlpha);
+
+                if (Raycaster.PointVisible(questPosition + iconMinOffset))
                 {
+                    fadeState = (false, 0, 1.0f);
+                    FadeStates[quest] = fadeState;
+
                     IDisposable? fontDisposer = null;
                     if (Canvas.FontHandle?.Available ?? false)
                     {
@@ -182,7 +196,6 @@ internal static class PluginHelpers
                     }
 
                     drawList.AddImage(questIconHandle, screenPosForIcon, screenPosForIcon + iconSize, new Vector2(0, 0), new Vector2(1, 1), ImGui.ColorConvertFloat4ToU32(curColor));
-
                     drawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(), screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, curColor.W * 255) / 255), quest.Name);
 
                     unsafe
@@ -192,7 +205,6 @@ internal static class PluginHelpers
                         {
                             hovering = true;
                             Framework.Instance()->Cursor->ActiveCursorType = (int)AddonCursorType.Clickable;
-                            // Only if hovered at the start and end of a right click (and mouse not being captured by ImGui)
                             if (MouseButtonState.RightReleased && startedHoveringOverQuestIcon && !ImGui.GetIO().WantCaptureMouse)
                             {
                                 Plugin.Instance.ToggleDummyWindow(quest);
@@ -206,9 +218,30 @@ internal static class PluginHelpers
 
                     fontDisposer?.Dispose();
                 }
+                else
+                {
+                    if (!fadeState.IsFadingOut)
+                    {
+                        fadeState = (true, 0, fadeState.CurrentAlpha);
+                        FadeStates[quest] = fadeState;
+                    }
+                }
+
+                if (fadeState.IsFadingOut)
+                {
+                    fadeState.FadeFrameCount++;
+                    fadeState.CurrentAlpha = Math.Max(0.0f, 1.0f - (fadeState.FadeFrameCount / 30f));
+                    curColor = new Vector4(1, 1, 1, alpha * fadeState.CurrentAlpha);
+
+                    drawList.AddImage(questIconHandle, screenPosForIcon, screenPosForIcon + iconSize, new Vector2(0, 0), new Vector2(1, 1), ImGui.ColorConvertFloat4ToU32(curColor));
+                    drawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(), screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, curColor.W * 255) / 255), quest.Name);
+
+                    FadeStates[quest] = fadeState;
+                }
             }
         }
     }
+
 
     public static bool hoveringOverSelectableRegion(Vector2 centerPosition, Vector2 size)
     {

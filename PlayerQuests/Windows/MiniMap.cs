@@ -40,7 +40,7 @@ namespace PlayerQuests.Windows
 
             var dotColor = ImGui.ColorConvertFloat4ToU32(new Vector4(1, 0, 0, 1));
 
-            if (!PluginHelpers.TempQuest.QuestType.IsNullOrEmpty())
+            if (!PluginHelpers.TempQuest.QuestType.IsNullOrEmpty() && PluginHelpers.dummyIconVisible)
             {
                 DrawQuestIcon(drawList, PluginHelpers.TempQuest);
             }

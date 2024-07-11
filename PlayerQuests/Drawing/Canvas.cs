@@ -20,6 +20,7 @@ using PlayerQuests.Drawing;
 using PlayerQuests.Helpers;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using Dalamud.Game.Addon.Events;
+using System.Runtime.CompilerServices;
 
 
 namespace PlayerQuests.Drawing
@@ -53,6 +54,10 @@ namespace PlayerQuests.Drawing
 
         public override void Draw()
         {
+            if (CheckIfLoading())
+            {
+                return;
+            }
             IDisposable? fontDisposer = null;
             if (FontHandle?.Available ?? false)
             {
@@ -67,22 +72,22 @@ namespace PlayerQuests.Drawing
             {
                 PluginHelpers.DrawDummy(quest);
             }
-            
+
             if (!PluginHelpers.TempQuest.QuestType.IsNullOrEmpty())
             {
                 PluginHelpers.DrawDummy(PluginHelpers.TempQuest);
             }
-            
+
             if (previousHovering && !PluginHelpers.hovering)
             {
                 Framework.Instance()->Cursor->ActiveCursorType = (int)AddonCursorType.Arrow;
             }
-            
+
             if (MouseButtonState.RightReleased)
             {
                 PluginHelpers.startedHoveringOverQuestIcon = false;
             }
-            
+
             fontDisposer?.Dispose();
 
             if (Plugin.Configuration!.showPosPicker)
@@ -104,7 +109,8 @@ namespace PlayerQuests.Drawing
                 if (MouseButtonState.LeftPressed)
                 {
                     Plugin.Configuration.showPosPicker = false;
-                    Plugin.Configuration.lastWorldPos = new Vector3(MathF.Round(worldPos.X,2), MathF.Round(worldPos.Y, 2), MathF.Round(worldPos.Z, 2));
+                    PluginHelpers.dummyIconVisible = true;
+                    Plugin.Configuration.lastWorldPos = new Vector3(MathF.Round(worldPos.X, 2), MathF.Round(worldPos.Y, 2), MathF.Round(worldPos.Z, 2));
                 }
 
             }
@@ -119,6 +125,15 @@ namespace PlayerQuests.Drawing
         {
             base.PostDraw();
             ImGui.PopStyleVar();
+        }
+
+        public bool CheckIfLoading()
+        {
+            var locationTitle = (AtkUnitBase*)Services.GameGui.GetAddonByName("_LocationTitle");
+            var fadeMiddle = (AtkUnitBase*)Services.GameGui.GetAddonByName("FadeMiddle");
+            return
+                locationTitle->IsVisible ||
+                fadeMiddle->IsVisible;
         }
 
     }
