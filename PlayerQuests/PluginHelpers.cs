@@ -118,6 +118,7 @@ internal static class PluginHelpers
         Completed = questCompleted,
         ExpireTime = questExpireTime, // TODO
         TimePosted = questTimePosted, // TODO
+        QuestObjectives = questObjectives.ToArray(),
     };
 
     private static Dictionary<uint, ISharedImmediateTexture> QuestIconTextures = new();

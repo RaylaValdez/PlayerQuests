@@ -205,6 +205,8 @@ public class MainWindow : Window, IDisposable
                     PluginHelpers.questObjectives.Add(new QuestObjectiveSettings
                     {
                         Objective = this.questObjectiveTemp,
+                        // turn objective into a string, and add it to the end of quest.QuestObjectives
+                        
                     });
                     this.questObjectiveTemp = string.Empty;
                 }
@@ -244,5 +246,8 @@ public class MainWindow : Window, IDisposable
         {
             PluginHelpers.Quests.Clear();
         }
+
     }
+
+
 }

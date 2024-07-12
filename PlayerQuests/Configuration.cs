@@ -19,10 +19,11 @@ public class Configuration : IPluginConfiguration
 
     public string tempQuestType { get; set; } = null!;
 
-
     public string tempQuestName { get; set;} = null!;
 
     public string tempQuestDescription { get; set; } = null!;
+
+    public string tempQuestObjectiveString { get; set; } = null!;
 
     public int tempReward {  get; set; } = 0;
 

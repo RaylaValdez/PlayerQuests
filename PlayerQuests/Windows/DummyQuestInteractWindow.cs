@@ -123,12 +123,12 @@ namespace PlayerQuests.Windows
                 ImGui.PopTextWrapPos();
                 ImGui.Unindent(14);
 
-                if (PluginHelpers.questObjectives.Count > 0)
+                if (DrawingQuest?.QuestObjectives.Length > 0)
                 {
                     ImGui.Image(objectivesIconHandle, objectivesIconSize);
                     ImGui.SameLine(objectivesIconSize.X + 2f);
                     WindowHelpers.ImGuiTextWithDropShadow("Objectives", 2f);
-                    foreach (QuestObjectiveSettings questObjective in PluginHelpers.questObjectives) // TODO change to DrawingQuest.Objectives
+                    foreach (QuestObjectiveSettings questObjective in DrawingQuest!.QuestObjectives) 
                     {
                         ImGui.Indent(14);
                         ImGui.PushTextWrapPos(windowWidth - 14);

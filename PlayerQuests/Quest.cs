@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Numerics;
 using Dalamud.Interface.Textures;
+using PlayerQuests.Helpers;
 
 namespace PlayerQuests
 {
@@ -28,6 +29,7 @@ namespace PlayerQuests
         public bool Accepted { get; set; }
         public bool Completed { get; set; }
         public string QuestAuthor { get; set; } = null!;
+        public QuestObjectiveSettings[] QuestObjectives { get; set; } = null!;
 
         public static string SerializeQuest(Quest quest)
         {
