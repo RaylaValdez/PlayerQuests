@@ -97,7 +97,8 @@ internal static class PluginHelpers
 
     public static List<Quest> Quests = [];
 
-    static readonly Dictionary<Quest, (bool IsFadingOut, int FadeFrameCount, float CurrentAlpha)> FadeStates = new();
+    static readonly Dictionary<int, (bool IsFadingOut, int FadeFrameCount, float CurrentAlpha)> FadeStates = new();
+    private const int FadeTimeFrames = 30;
 
 
     public static Quest TempQuest => new Quest()
@@ -113,11 +114,11 @@ internal static class PluginHelpers
         QuestZone = "TODO",
         DatacenterName = questDatacenter,
         WorldName = questWorld,
-        Id = -1, // TODO
+        Id = -1, // -1 ID is used for the temp quest
         Accepted = questAccepted,
         Completed = questCompleted,
-        ExpireTime = questExpireTime, // TODO
-        TimePosted = questTimePosted, // TODO
+        ExpireTime = questExpireTime,
+        TimePosted = questTimePosted,
         QuestObjectives = questObjectives.ToArray(),
     };
 
@@ -162,10 +163,10 @@ internal static class PluginHelpers
         var opaqueColor = new Vector4(1, 1, 1, 1);
         var transparentColor = new Vector4(1, 1, 1, 0);
 
-        if (!FadeStates.TryGetValue(quest, out var fadeState))
+        if (!FadeStates.TryGetValue(quest.Id, out var fadeState))
         {
             fadeState = (false, 0, 1.0f);
-            FadeStates[quest] = fadeState;
+            FadeStates[quest.Id] = fadeState;
         }
 
         if (dummyIconVisible)
@@ -187,14 +188,13 @@ internal static class PluginHelpers
 
                 if (Raycaster.PointVisible(questPosition + iconMinOffset))
                 {
-                    fadeState = (false, 0, 1.0f);
-                    FadeStates[quest] = fadeState;
-
-                    IDisposable? fontDisposer = null;
-                    if (Canvas.FontHandle?.Available ?? false)
+                    // Fade in
+                    fadeState.IsFadingOut = false;
+                    if (fadeState.FadeFrameCount > 0)
                     {
-                        fontDisposer = Canvas.FontHandle.Push();
+                        fadeState.FadeFrameCount--;
                     }
+                    fadeState.CurrentAlpha = Math.Max(0.0f, 1.0f - (fadeState.FadeFrameCount / (float)FadeTimeFrames));
 
                     drawList.AddImage(questIconHandle, screenPosForIcon, screenPosForIcon + iconSize, new Vector2(0, 0), new Vector2(1, 1), ImGui.ColorConvertFloat4ToU32(curColor));
                     drawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(), screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, curColor.W * 255) / 255), quest.Name);
@@ -216,29 +216,36 @@ internal static class PluginHelpers
                             }
                         }
                     }
-
-                    fontDisposer?.Dispose();
                 }
                 else
                 {
+                    // Fade out
                     if (!fadeState.IsFadingOut)
                     {
-                        fadeState = (true, 0, fadeState.CurrentAlpha);
-                        FadeStates[quest] = fadeState;
+                        if (fadeState.FadeFrameCount > 0)
+                        {
+                            fadeState.FadeFrameCount--;
+                        }
+
+                        fadeState.IsFadingOut = true;
                     }
                 }
 
+                // Fade out
                 if (fadeState.IsFadingOut)
                 {
-                    fadeState.FadeFrameCount++;
-                    fadeState.CurrentAlpha = Math.Max(0.0f, 1.0f - (fadeState.FadeFrameCount / 30f));
+                    if (fadeState.FadeFrameCount < FadeTimeFrames)
+                    {
+                        fadeState.FadeFrameCount++;
+                    }
+
+                    fadeState.CurrentAlpha = Math.Max(0.0f, 1.0f - (fadeState.FadeFrameCount / (float)FadeTimeFrames));
                     curColor = new Vector4(1, 1, 1, alpha * fadeState.CurrentAlpha);
 
                     drawList.AddImage(questIconHandle, screenPosForIcon, screenPosForIcon + iconSize, new Vector2(0, 0), new Vector2(1, 1), ImGui.ColorConvertFloat4ToU32(curColor));
                     drawList.AddText(ImGui.GetFont(), ImGui.GetFontSize(), screenPosForText, ImGui.ColorConvertFloat4ToU32(new Vector4(233, 255, 226, curColor.W * 255) / 255), quest.Name);
-
-                    FadeStates[quest] = fadeState;
                 }
+                FadeStates[quest.Id] = fadeState;
             }
         }
     }
