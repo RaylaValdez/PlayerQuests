@@ -32,7 +32,7 @@ public sealed class Plugin : IDalamudPlugin
     public static Plugin Instance { get; private set; } = null!;
 
     public static WindowSystem WindowSystem = new("PlayerQuest");
-    public static MiniMap NaviMapWindow = new();
+    public static MiniMap NaviMapWindow = null!;
 
     private ConfigWindow ConfigWindow { get; init; }
     private MainWindow MainWindow { get; init; }
@@ -62,6 +62,7 @@ public sealed class Plugin : IDalamudPlugin
         CanvasWindow = new Canvas();
         JournalWindow = new JournalWindow("Journal Window 1");
         DummyWindow = new DummyQuestInteractWindow();
+        NaviMapWindow = new MiniMap();
 
         WindowHelpers.TrumpGothicFontHandle = GameFontBuilder.GetFont(GameFontFamilyAndSize.TrumpGothic23);
 

@@ -48,6 +48,7 @@ internal static class PluginHelpers
     public static Vector3 playerPosition => Services.ClientState.LocalPlayer!.Position;
     public static Vector3 iconMaxOffset = new(0, 2.5f, 0);
     public static Vector3 iconMinOffset = new(0, 1f, 0);
+    public static Vector3 rayCastEndOffset = new(0, 0.25f, 0);
     public static Vector3 textOffset = new(0, 2.25f, 0);
 
     public static Vector2 iconSize = new(96, 96);
@@ -88,6 +89,7 @@ internal static class PluginHelpers
 
     public static string questAuthor = string.Empty;
 
+    public static bool miniMapIconOutOfRange = false;
 
     public static bool hovering = false;
     public static bool startedHoveringOverQuestIcon = false;
@@ -186,7 +188,7 @@ internal static class PluginHelpers
 
                 var curColor = new Vector4(1, 1, 1, alpha * fadeState.CurrentAlpha);
 
-                if (Raycaster.PointVisible(questPosition + iconMinOffset))
+                if (Raycaster.PointVisible(questPosition + rayCastEndOffset))
                 {
                     // Fade in
                     fadeState.IsFadingOut = false;
@@ -202,7 +204,7 @@ internal static class PluginHelpers
                     unsafe
                     {
                         var prevCursorType = Framework.Instance()->Cursor->ActiveCursorType;
-                        if (hoveringOverSelectableRegion(screenPosForText + textWidth / 2, textWidth * 1.5f) || hoveringOverSelectableRegion(screenPosForIcon + iconSize / 2, iconSize * 1.5f))
+                        if (distance < 5f && (hoveringOverSelectableRegion(screenPosForText + textWidth / 2, textWidth * 1.5f) || hoveringOverSelectableRegion(screenPosForIcon + iconSize / 2, iconSize * 1.5f)))
                         {
                             hovering = true;
                             Framework.Instance()->Cursor->ActiveCursorType = (int)AddonCursorType.Clickable;

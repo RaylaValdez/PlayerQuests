@@ -54,11 +54,13 @@ namespace PlayerQuests.Helpers
             var distance = Vector2.Distance(PlayerCirclePos, QuestCirclePos);
             if (distance > _minimapRadius)
             {
-                var originToObject = QuestCirclePos - PlayerCirclePos;
-                originToObject *= _minimapRadius / distance;
-                QuestCirclePos = PlayerCirclePos + originToObject;
+                //var originToObject = QuestCirclePos - PlayerCirclePos;
+                //originToObject *= _minimapRadius / distance;
+                //QuestCirclePos = PlayerCirclePos + originToObject;
+                return Vector2.Zero;
             }
 
+            
             return QuestCirclePos;
         }
 
